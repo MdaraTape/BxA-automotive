@@ -1,4 +1,4 @@
-# BxA - Bavaria x Affalterbach
+# BxA - Bavaira x Affalterbach
 
 Disability-inclusive automotive e-commerce store offering accessories and simulated premium vehicle purchases.
 Student project: DLBITPEWP01_E, Option 2 (E-commerce).
