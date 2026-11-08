@@ -1,69 +1,35 @@
-# BxA - Bavaira x Affalterbach
+# BxA Automotive
+Bavaira x Affalterbach is a student e-commerce prototype for premium sample vehicles and accessories. Customers can filter accessories by multiple access needs and send a separate adaptation consultation enquiry.
 
-Disability-inclusive automotive e-commerce store offering accessories and simulated premium vehicle purchases.
-Student project: DLBITPEWP01_E, Option 2 (E-commerce).
+## Run locally
+Use Python 3.10 or later. From the repository directory:
 
-## Status
-Phase 1 planning only. No runnable application or completed tests are claimed.
-Repository URL: https://github.com/MdaraTape/BxA-automotive
+```sh
+python -m venv .venv
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# macOS / Linux: source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m flask --app app:create_app init-db
+python -m flask --app app:create_app run
+```
 
-## Purpose
-Serve disabled and non-disabled customers through a shared shopping experience.
-Disability-focused products and optional adaptation consultation enquiries are explicit features.
-This is an independent educational concept, not an authorised manufacturer service.
+Open http://127.0.0.1:5000. Use sample contact details. The SQLite file and local session key are stored under the ignored `instance/` directory. Initialisation creates tables and inserts missing sample data.
 
-## Planned stack
-Python, Flask, Jinja, HTML, custom CSS, JavaScript fetch/JSON and SQLite via sqlite3.
-Signed Flask session for product IDs and quantities; server-authoritative prices.
+## Try the prototype
+1. Select **Hand and arm mobility** and **Grip and dexterity**. Results match both needs.
+2. Open a vehicle and choose a colour and trim. **Add to cart** updates the cart count through fetch and JSON.
+3. Change a quantity in the cart and continue to simulated checkout. Submit sample details to receive an order reference.
+4. Return to a vehicle and save a separate adaptation enquiry.
 
-## Core features
-- Approximately eight seeded accessories and two or three sample premium vehicles; catalogue filtering and detail pages.
-- Multi-select access needs: leg/foot mobility, hand/arm mobility, grip/dexterity,
-  wheelchair use/transfers. Browsing without a filter remains possible.
-- Other / discuss my needs is an enquiry option; no diagnoses required.
-- Cart with quantity updates and removal; asynchronous add-to-cart badge.
-- Validated guest checkout, simulated payment, persisted orders and confirmation.
-- Vehicle studio: select a sample car, colour and trim, add the configured car to the cart,
-  complete simulated checkout and receive a saved order confirmation.
-- Separate disability-related adaptation consultation enquiries, including hand-control requests.
-  An enquiry is not an installed adaptation or confirmed vehicle compatibility.
-- Keyboard operation, visible focus, labels, alternative text and clear errors.
+## Design
+- Flask and Jinja render the pages. HTML forms work with JavaScript disabled.
+- The signed session holds product and option IDs and quantities. Flask calculates totals from integer cents stored in SQLite.
+- An SQLite transaction saves the order and its line items together. The order records the unit price, colour and trim at checkout.
+- The access-needs join table lets an accessory match several categories. Vehicle options belong to a specific vehicle.
+- Adaptation enquiries are recorded separately from purchases. Payment is simulated.
 
-## Planned database
-categories -> products -> order_items <- orders
-products -> vehicle_options (allowed colours/trims and price adjustments for vehicle products)
-products -> enquiries (vehicle products only)
-products <-> access_needs through product_access_needs
-Each order contains one or more items. Monetary values use integer minor units.
-Products distinguish accessories from vehicles using a product type.
-Order items retain product name, configured unit price and selected colour/trim snapshots.
-The backend validates vehicle options and recalculates all prices from trusted database data.
+## Verification
+Run `python -m unittest discover -s tests -v`. Tests use a temporary SQLite database and synthetic inputs.
 
-## Development sequence
-1. Read and apply Phase 1 tutor feedback.
-2. Schema, seed data and a database-backed catalogue page.
-3. Product details and vehicle configuration; cart, validation and asynchronous interaction.
-4. Checkout, atomic order writes and confirmation.
-5. Disability-related consultation form and persisted enquiries.
-6. Tests, accessibility checks, screenshots and documentation.
-
-## Setup
-To be documented when implementation exists: Python version, dependency installation,
-environment variables, database initialisation/seeding and application launch commands.
-Do not submit the final project with this setup section incomplete.
-
-## Planned verification
-Cart quantity boundaries; invalid product IDs; tampered prices; empty cart;
-checkout errors; invalid vehicle options; configured vehicle price calculation;
-order/item and configuration persistence; enquiry validation; keyboard use;
-responsive layout and two-browser checks. Record actual results during development.
-
-## Scope exclusions
-No user accounts, real payments, legally binding vehicle sales, delivery logistics
-or actual adaptation installation. Vehicle purchases are educational simulations.
-Consultation requests do not confirm vehicle compatibility or medical suitability.
-
-## Evidence and attribution
-Use incremental commits. Record challenges and scope changes honestly.
-Track image sources, libraries, tutorials and AI assistance according to school rules.
-Use synthetic customer data in tests and screenshots. Do not commit secrets.
+## Scope and assistance
+Phase 2 covers guest purchasing and adaptation enquiries. The prototype uses two sample vehicles, eight accessories and fictional demo prices. It does not collect payment information. ChatGPT assisted with implementation, verification and portfolio drafting. Review the source and adapt the reflection to your own experience before submission.

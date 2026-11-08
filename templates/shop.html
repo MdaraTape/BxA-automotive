@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}
+<section class="hero"><p class="eyebrow">BxA Automotive</p><h1>Find your fit.</h1><p>Explore premium vehicle configurations and accessories for different access needs.</p></section>
+<div class="shop"><aside class="panel"><form method="get"><h2>Filters</h2>
+<label for="kind">Product type</label><select id="kind" name="kind">
+{% for value,label in [('', 'All products'),('vehicle','Vehicles'),('accessory','Accessories')] %}<option value="{{ value }}" {% if kind == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+</select><fieldset><legend>Access needs</legend><p class="muted">Matches all selected needs.</p>
+{% for need in needs %}<label class="check"><input type="checkbox" name="need" value="{{ need.id }}" {% if need.id in active %}checked{% endif %}>{{ need.name }}</label>{% endfor %}</fieldset>
+<button>Apply filters</button> <a href="{{ url_for('catalog') }}">Clear</a></form></aside>
+<section><h2>{{ items|length }} products</h2><div class="grid">
+{% for item in items %}<article class="card"><div class="tile {{ item.kind }}" aria-hidden="true"><span>{{ 'VEHICLE' if item.kind == 'vehicle' else 'ACCESSORY' }}</span></div>
+<div class="card-body"><h3><a href="{{ url_for('detail', product_id=item.id) }}">{{ item.name }}</a></h3><p>{{ item.description }}</p><strong>{{ item.price|money }}</strong></div></article>
+{% else %}<p>No products match these filters. Clear filters to see the full catalogue.</p>{% endfor %}</div></section></div>
+{% endblock %}
