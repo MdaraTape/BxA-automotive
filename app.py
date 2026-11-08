@@ -62,7 +62,8 @@ def create_app(config=None):
     def protect_forms():
         if request.method == "POST":
             expected = session.get("csrf", "")
-            if not expected or not secrets.compare_digest(expected, request.form.get("csrf", "")):
+            provided = request.form.get("csrf", "").encode("utf-8")
+            if not expected or not secrets.compare_digest(expected.encode("ascii"), provided):
                 abort(400, "Invalid form token. Reload the page and try again.")
 
     @app.template_filter("money")
@@ -101,6 +102,11 @@ def create_app(config=None):
                                 colour=colour, trim=trim, price=unit_price,
                                 subtotal=unit_price * line["quantity"]))
         return details
+
+    def save_cart(lines):
+        session["cart"] = lines
+        session["cart_revision"] = secrets.token_hex(16)
+        session.pop("checkout_token", None)
 
     @app.get("/")
     def catalog():
@@ -147,8 +153,7 @@ def create_app(config=None):
             if len(lines) >= 20:
                 abort(400, "Maximum of 20 distinct cart lines.")
             lines.append(dict(product_id=product_id, colour=colour, trim=trim, quantity=1))
-        session["cart"] = lines
-        session.pop("checkout_token", None)
+        save_cart(lines)
         if request.accept_mimetypes.best == "application/json":
             return jsonify(count=sum(line["quantity"] for line in lines), message="Added to cart.")
         flash("Added to cart.")
@@ -157,10 +162,17 @@ def create_app(config=None):
     @app.get("/cart")
     def view_cart():
         lines = cart_details()
-        return render_template("cart.html", lines=lines, total=sum(line["subtotal"] for line in lines))
+        if "cart_revision" not in session:
+            session["cart_revision"] = secrets.token_hex(16)
+        return render_template("cart.html", lines=lines, revision=session["cart_revision"],
+                               total=sum(line["subtotal"] for line in lines))
 
     @app.post("/cart/<int:index>")
     def update_cart(index):
+        revision = request.form.get("revision")
+        if not revision or revision != session.get("cart_revision"):
+            flash("Your cart changed since this page opened. Review the current items and try again.")
+            return redirect(url_for("view_cart"))
         lines = cart()
         if index >= len(lines):
             abort(404)
@@ -171,8 +183,7 @@ def create_app(config=None):
             if quantity is None or not 1 <= quantity <= 20:
                 abort(400, "Choose a quantity between 1 and 20.")
             lines[index]["quantity"] = quantity
-        session["cart"] = lines
-        session.pop("checkout_token", None)
+        save_cart(lines)
         return redirect(url_for("view_cart"))
 
     def contact():
@@ -217,6 +228,7 @@ def create_app(config=None):
                       line["quantity"], line["colour"], line["trim"]) for line in lines],
                 )
         session["cart"] = []
+        session.pop("cart_revision", None)
         return redirect(url_for("confirmation", reference=reference))
 
     @app.get("/orders/<reference>")

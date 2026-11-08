@@ -2,6 +2,7 @@
 {% for line in lines %}<article class="panel cart-line"><div><h2>{{ line.product.name }}</h2>
 {% if line.colour %}<p>{{ line.colour }} · {{ line.trim }}</p>{% endif %}<p>{{ line.price|money }} each</p></div>
 <form method="post" action="{{ url_for('update_cart', index=line.index) }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="hidden" name="revision" value="{{ revision }}">
 <label for="qty-{{ line.index }}">Quantity</label><input id="qty-{{ line.index }}" name="quantity" type="number" min="1" max="20" value="{{ line.quantity }}" required>
 <button name="action" value="update">Update</button> <button class="secondary" name="action" value="remove" formnovalidate>Remove</button></form>
 <strong>{{ line.subtotal|money }}</strong></article>{% else %}<p>Your cart is empty.</p>{% endfor %}

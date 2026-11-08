@@ -28,8 +28,20 @@ Open http://127.0.0.1:5000. Use sample contact details. The SQLite file and loca
 - The access-needs join table lets an accessory match several categories. Vehicle options belong to a specific vehicle.
 - Adaptation enquiries are recorded separately from purchases. Payment is simulated.
 
+## Final release checks
+Cart forms carry a revision identifier. A form left open in another tab refreshes
+the cart if an intervening update moved or removed its target row. Form tokens
+are compared as bytes so malformed Unicode values return HTTP 400.
+
+The database schema is in `schema.sql`. The data in `seed.sql` provide two sample
+vehicles, eight accessories and four access-needs categories. From the catalogue,
+try a filtered search, add a vehicle and an accessory, change a quantity, then
+place a simulated order. The confirmation shows the saved options and prices.
+For a fresh demo, stop the server and point `DATABASE` at a temporary file when
+creating the app, or move the local `instance/` directory aside and rerun init-db.
+
 ## Verification
 Run `python -m unittest discover -s tests -v`. Tests use a temporary SQLite database and synthetic inputs.
 
 ## Scope and assistance
-Phase 2 covers guest purchasing and adaptation enquiries. The prototype uses two sample vehicles, eight accessories and fictional demo prices. It does not collect payment information. ChatGPT assisted with implementation, verification and portfolio drafting. Review the source and adapt the reflection to your own experience before submission.
+The final coursework release covers guest purchasing and adaptation enquiries. The prototype uses two sample vehicles, eight accessories and fictional demo prices. It does not collect payment information. ChatGPT assisted with implementation, verification and portfolio drafting. Review the source and adapt the reflection to your own experience before submission.

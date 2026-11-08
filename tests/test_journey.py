@@ -22,6 +22,11 @@ class StoreTest(unittest.TestCase):
     def post(self, path, **values):
         return self.client.post(path, data={"csrf": self.csrf, **values})
 
+    def cart_revision(self):
+        self.client.get("/cart")
+        with self.client.session_transaction() as session:
+            return session["cart_revision"]
+
     def rows(self, query):
         with sqlite3.connect(self.path) as connection:
             return connection.execute(query).fetchall()
@@ -35,7 +40,7 @@ class StoreTest(unittest.TestCase):
     def test_order_snapshot_and_retry(self):
         self.assertEqual(self.post("/cart/add/1", colour=2, trim=4, price=1).status_code, 302)
         self.assertEqual(self.post("/cart/add/6").status_code, 302)
-        self.assertEqual(self.post("/cart/1", quantity=3).status_code, 302)
+        self.assertEqual(self.post("/cart/1", quantity=3, revision=self.cart_revision()).status_code, 302)
         self.client.get("/checkout")
         with self.client.session_transaction() as session:
             token = session["checkout_token"]
@@ -56,8 +61,8 @@ class StoreTest(unittest.TestCase):
         self.assertEqual(self.post("/cart/add/1", colour=5, trim=4).status_code, 400)
         self.assertEqual(self.client.post("/cart/add/6").status_code, 400)
         self.post("/cart/add/6")
-        self.assertEqual(self.post("/cart/0", quantity=0).status_code, 400)
-        self.assertEqual(self.post("/cart/0", action="remove").status_code, 302)
+        self.assertEqual(self.post("/cart/0", quantity=0, revision=self.cart_revision()).status_code, 400)
+        self.assertEqual(self.post("/cart/0", action="remove", revision=self.cart_revision()).status_code, 302)
         self.assertIn(b"Your cart is empty", self.client.get("/cart").data)
 
     def test_enquiry_is_separate_from_orders(self):
@@ -66,3 +71,29 @@ class StoreTest(unittest.TestCase):
         self.assertEqual(self.post("/enquiries/1", **form).status_code, 302)
         self.assertEqual(self.rows("SELECT product_id, interest FROM enquiries"), [(1, form["interest"])])
         self.assertEqual(self.rows("SELECT id FROM orders"), [])
+
+    def test_empty_checkout_and_duplicate_cart_add(self):
+        response = self.client.get("/checkout", follow_redirects=True)
+        self.assertIn(b"Your cart is empty", response.data)
+        self.post("/cart/add/6")
+        self.post("/cart/add/6")
+        with self.client.session_transaction() as session:
+            self.assertEqual(len(session["cart"]), 1)
+            self.assertEqual(session["cart"][0]["quantity"], 2)
+
+    def test_stale_cart_form_cannot_update_a_different_line(self):
+        self.post("/cart/add/6")
+        self.post("/cart/add/7")
+        old_revision = self.cart_revision()
+        self.post("/cart/0", action="remove", revision=old_revision)
+        response = self.post("/cart/0", quantity=9, revision=old_revision)
+        self.assertEqual(response.status_code, 302)
+        with self.client.session_transaction() as session:
+            self.assertEqual(session["cart"][0]["product_id"], 7)
+            self.assertEqual(session["cart"][0]["quantity"], 1)
+        self.assertIn(b"Your cart changed", self.client.get("/cart").data)
+
+    def test_non_ascii_form_token_returns_bad_request(self):
+        response = self.client.post("/cart/add/6", data={"csrf": "incorrect-☃"})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Invalid form token", response.data)
