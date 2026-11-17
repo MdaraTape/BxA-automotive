@@ -1,0 +1,13 @@
+test_accessory_detail_to_confirmation (test_journey.StoreTest.test_accessory_detail_to_confirmation) ... ok
+test_empty_checkout_and_duplicate_cart_add (test_journey.StoreTest.test_empty_checkout_and_duplicate_cart_add) ... ok
+test_enquiry_is_separate_from_orders (test_journey.StoreTest.test_enquiry_is_separate_from_orders) ... ok
+test_invalid_option_quantity_and_form_token (test_journey.StoreTest.test_invalid_option_quantity_and_form_token) ... ok
+test_multi_filter_matches_both_needs (test_journey.StoreTest.test_multi_filter_matches_both_needs) ... ok
+test_non_ascii_form_token_returns_bad_request (test_journey.StoreTest.test_non_ascii_form_token_returns_bad_request) ... ok
+test_order_snapshot_and_retry (test_journey.StoreTest.test_order_snapshot_and_retry) ... ok
+test_stale_cart_form_cannot_update_a_different_line (test_journey.StoreTest.test_stale_cart_form_cannot_update_a_different_line) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.125s
+
+OK

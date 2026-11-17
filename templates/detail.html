@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}{{ item.name }} · BxA{% endblock %}{% block body %}
+<p><a href="{{ url_for('catalog') }}">← Catalogue</a></p>
+<section class="hero"><p class="eyebrow">{{ item.kind }}</p><h1>{{ item.name }}</h1><p>{{ item.description }}</p><strong>{{ item.price|money }}{% if item.kind == 'vehicle' %} base price{% endif %}</strong></section>
+<div class="grid detail"><section class="panel"><h2>{% if options %}Configure your vehicle{% else %}Purchase{% endif %}</h2>
+<form action="{{ url_for('add', product_id=item.id) }}" method="post" data-cart-add>
+<input type="hidden" name="csrf" value="{{ csrf }}">
+{% for kind in ('colour','trim') if options %}<label for="{{ kind }}">{{ kind|capitalize }}</label><select required name="{{ kind }}" id="{{ kind }}">
+{% for option in options if option.kind == kind %}<option value="{{ option.id }}">{{ option.label }}{% if option.adjustment %} (+{{ option.adjustment|money }}){% endif %}</option>{% endfor %}
+</select>{% endfor %}
+<button>Add to cart</button> <a href="{{ url_for('view_cart') }}">View cart</a><p role="status" class="muted" data-cart-status></p></form></section>
+{% if options %}<section class="panel"><h2>Adaptation consultation</h2><p>Tell us what you would like to discuss. This enquiry is separate from checkout.</p>
+<form method="post" action="{{ url_for('enquiry', product_id=item.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label for="interest">Consultation interest</label><select name="interest" id="interest">{% for interest in interests %}<option>{{ interest }}</option>{% endfor %}</select>
+{% include "contact.html" %}<button>Save enquiry</button></form></section>{% endif %}</div>
+{% endblock %}

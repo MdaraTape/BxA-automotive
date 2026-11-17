@@ -1,0 +1,2 @@
+{% extends "base.html" %}{% block body %}<section class="hero"><p class="eyebrow">Simulated checkout</p><h1>Order saved</h1><p>Reference <strong>{{ order.reference }}</strong></p></section>
+<section class="panel"><h2>Order items</h2>{% for line in lines %}<p>{{ line.quantity }} × {{ line.name }} · {{ line.unit_price|money }} each{% if line.colour %}<br>{{ line.colour }} · {{ line.trim }}{% endif %}</p>{% endfor %}<h2>Total {{ order.total|money }}</h2></section><p><a href="{{ url_for('catalog') }}">Return to catalogue</a></p>{% endblock %}
