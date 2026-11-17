@@ -55,6 +55,9 @@ show a Purchase panel with Add to cart and View cart. Vehicle details add colour
 and trim selectors and a separate consultation form. This distinction is shown
 in the final documentation and screenshots under `docs/`.
 
+See [the finalization evidence](docs/finalization.md) for the product-detail
+wireframe, student screenshots and verification scope.
+
 ## Design
 - Flask and Jinja render the pages. HTML forms work with JavaScript disabled.
 - The signed session holds product and option IDs and quantities. Flask calculates totals from integer cents stored in SQLite.

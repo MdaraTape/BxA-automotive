@@ -47,18 +47,29 @@ total. The configured-vehicle test saved Polar White/Premium and the order price
 snapshot. The test includes three organisers for a combined $155,450.00 total.
 
 Earlier Chromium verification and the student's 9 November browser screenshots
-support the Phase 2 flow. A fresh browser walkthrough of this final release is
-pending because the current browser environment blocked local-page access.
+support the Phase 2 checkout flow. On 17 November, the student ran the updated
+release and captured the accessory detail page and the cart. The detail capture
+shows Foldable transfer board, $125.00, Add to cart and View cart. The cart capture
+shows quantity 1 and a $125.00 total. Both display the manufacturer disclaimer.
+These two images support the detail-to-cart step. Full automated browser
+verification of the final release was blocked in the assistant environment.
 Broader cross-browser and assistive-technology testing remains future work.
 
-## Final evidence capture
+## Final screenshots
 
-Run this release following the root README. Capture the Foldable transfer board
-detail page with its name, description, $125.00 price, Add to cart and View cart
-visible. Capture the Added to cart message and updated cart count as well. Include
-the visible manufacturer disclaimer in the final evidence. Use sample contact
-details for any repeated checkout. Keep the screenshots from the exact release
-included in the final code ZIP.
+![Accessory detail page with Add to cart and manufacturer disclaimer](evidence/accessory-detail.png)
+
+Figure 1. Student-captured product detail on 17 November 2026. The cart count is
+zero before adding. The name, description, price and Purchase controls are visible.
+
+![Cart with one Foldable transfer board and a 125 dollar total](evidence/accessory-cart.png)
+
+Figure 2. Student-captured cart on 17 November 2026. Quantity 1, unit price and total
+are visible, along with Update, Remove, Simulated checkout and the disclaimer.
+
+The printable evidence PDF in this directory places these screenshots beside the
+product-detail explanation and a response to the five tutor conditions. The
+separate two-page abstract summarises the final project.
 
 ## Assistance
 
