@@ -44,7 +44,7 @@ Open http://127.0.0.1:5000. Use sample contact details. The SQLite file and loca
    Place the simulated order. **Order saved** shows the reference and $125.00 total.
 5. Return to the catalogue. Select **Hand and arm mobility** and **Grip and
    dexterity** to return two accessories matching both needs.
-6. Open the GLE sample vehicle. Polar White and Premium produce a fictional
+6. Clear the filters to show all products, then open the GLE sample vehicle. Polar White and Premium produce a fictional
    $155,300.00 price. Add it and complete another simulated order.
 7. On the vehicle detail page, save a separate adaptation consultation enquiry.
 
@@ -56,7 +56,7 @@ and trim selectors and a separate consultation form. This distinction is shown
 in the final documentation and screenshots under `docs/`.
 
 See [the finalization evidence](docs/finalization.md) for the product-detail
-wireframe, student screenshots and verification scope.
+wireframe, my screenshots and verification scope.
 
 ## Design
 - Flask and Jinja render the pages. HTML forms work with JavaScript disabled.
